@@ -9,7 +9,7 @@ from ultralytics import YOLO
 from collections import Counter
 
 # Loading the trained model
-model = YOLO(r"E:\hotel_facility_detection\hotel_best.pt")
+model = YOLO(r"E:\hotel_facility_detection\best(2).pt")
 
 st.title("Hotel Facility Detection")
 #st.write("Object detection and counting using YOLO11")
