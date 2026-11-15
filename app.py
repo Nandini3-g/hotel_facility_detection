@@ -4,14 +4,18 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import os
 
 from ultralytics import YOLO
 from collections import Counter
 
 # Loading the trained model
-model = YOLO("E:\hotel_facility_detection\best.pt")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "best.pt")
+
+model = YOLO(MODEL_PATH)
+
 st.title("Hotel Facility Detection")
-#st.write("Object detection and counting using YOLO11")
 
 # Image selection
 st.subheader("Select an Image")
@@ -25,11 +29,8 @@ option = st.radio(
 image = None
 
 if option == "Camera":
-
     image_file = st.camera_input("Capture hotel room image")
-
 else:
-
     image_file = st.file_uploader(
         "Upload an image",
         type=["jpg", "jpeg", "png"]
@@ -48,19 +49,15 @@ if image_file is not None:
         cv2.IMREAD_COLOR
     )
 
-    
-# Display original image
+    # Display original image
     st.subheader("Original Image")
 
     fig, ax = plt.subplots(figsize=(9, 6))
-
     ax.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
     ax.axis("off")
 
     st.pyplot(fig)
     plt.close(fig)
-   
-    
 
     # Detect button
     if st.button("Detect Objects", type="primary"):
@@ -102,16 +99,13 @@ if image_file is not None:
             counts = Counter(class_ids)
 
         else:
-
             counts = Counter()
 
         # Counting all classes
         class_names = result.names
-
         class_counts = {}
 
         for class_id, class_name in class_names.items():
-
             class_counts[class_name] = counts.get(class_id, 0)
 
         # Creating DataFrame
@@ -132,7 +126,6 @@ if image_file is not None:
         col1, col2, col3 = st.columns(3)
 
         col1.metric("Total Objects", total_objects)
-
         col2.metric("Classes Detected", detected_classes)
 
         col3.metric(
@@ -140,16 +133,12 @@ if image_file is not None:
             len(class_counts) - detected_classes
         )
 
-        
         # Bar chart
         st.subheader("Object Count Visualization")
 
         fig, ax = plt.subplots(figsize=(10, 5))
 
-        ax.bar(
-            df["Facility"],
-            df["Count"]
-        )
+        ax.bar(df["Facility"], df["Count"])
 
         ax.set_xlabel("Hotel Facilities")
         ax.set_ylabel("Number of Objects")
@@ -170,21 +159,17 @@ if image_file is not None:
         col1, col2 = st.columns(2)
 
         with col1:
-
             st.write("**Detected Facilities**")
 
             for _, row in detected.iterrows():
-
                 st.write(
                     f"🟢 {row['Facility']} : {row['Count']}"
                 )
 
         with col2:
-
             st.write("**Not Detected**")
 
             for _, row in not_detected.iterrows():
-
                 st.write(f"⚪ {row['Facility']} : 0")
 
         # Individual detection confidence
@@ -216,7 +201,6 @@ if image_file is not None:
             )
 
         else:
-
             st.warning("No objects detected.")
 
         # Download report
@@ -232,5 +216,4 @@ if image_file is not None:
         )
 
 else:
-
     st.info("Capture or upload an image to start detection.")
