@@ -11,7 +11,7 @@ from collections import Counter
 
 # Loading the trained model
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "best.pt")
+MODEL_PATH = os.path.join(BASE_DIR, "best_v2.pt")
 
 model = YOLO(MODEL_PATH)
 
@@ -64,7 +64,7 @@ if image_file is not None:
 
         results = model.predict(
             source=image,
-            conf=0.38,
+            conf=0.25,
             imgsz=640,
             verbose=False
         )
